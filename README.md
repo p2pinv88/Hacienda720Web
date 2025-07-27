@@ -1,11 +1,22 @@
-Utilidades para generar un archivo 720 para importar en la herramienta de Hacienda.
+# 🌐 Generador de Modelo 720 para Mintos
 
-Ahora mismo sólo hay un módulo para leer la hoja de balance de Mintos. Idealmente se puede extender fácilmente a otras plataformas, ya sea crowd o bolsa.
+¡Bienvenido! Esta aplicación web convierte tu balance de Mintos en un archivo ".720" listo para importar en la herramienta de la Agencia Tributaria.
 
-Instrucciones de uso:
+**Acceso directo:** [Hacienda720Web en GitHub Pages](https://p2pinv88.github.io/Hacienda720Web/)
 
-- Cambiar las variables en mayúsculas de arriba del archivo `mintos.py` con los datos propios. Se espera que los archivos de entrada estén en el mismo directorio del script.
-- A tener en cuenta al exportar el archivo CSV:
-  - Asegurarse que las cantidades tengas todos los decimales (suelen ser 6). Excel puede redondear a 2 al exportar sin darnos cuenta.
-  - Asegurarse el formato de las cantidades. Solo se soporta español (12.345,67), ingles (12,345.67) o estandar (12345.67).
-- Ejecutar `python mintos.py`. Generará un archivo con el nombre `OUTPUT_FILENAME`, que se puede importar en la herramienta web de Hacienda.
+## 🚀 Cómo utilizar la web
+
+1. Visita el enlace anterior y rellena tus **datos personales**: año fiscal, nombre completo, DNI y teléfono.
+2. Sube el **CSV de tu balance de Mintos** del año que quieres declarar. De forma opcional puedes adjuntar el CSV del año anterior si ya presentaste el modelo.
+3. Pulsa **Generar Archivo 720** y espera unos segundos mientras se procesa el fichero.
+4. Revisa el resumen que aparece en pantalla y haz clic en **Descargar Archivo 720** para obtener el archivo listo para presentar.
+
+Todo el procesamiento ocurre en tu navegador: tus datos *no* se envían a ningún servidor.
+
+## ℹ️ Consejos al exportar el CSV
+
+- Asegúrate de que las cantidades conserven todos los decimales (suelen ser 6).
+- El formato de las cantidades puede ser español (`12.345,67`), inglés (`12,345.67`) o estándar (`12345.67`).
+- Usa el punto y coma (`;`) como delimitador al guardar el CSV.
+
+¡Eso es todo! Esperamos que esta herramienta te facilite la generación del Modelo 720. 😄
