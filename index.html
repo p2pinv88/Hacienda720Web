@@ -475,26 +475,65 @@
             return amount;
         }
 
+// Parsear CSV
 function parseCSV(text) {
     // Normalizar saltos de línea: convierte \r\n y \r a \n
     const normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-    const lines = normalizedText.split('\n').filter(line => line.trim());
+    const lines = normalizedText.split('\n');
     
     if (lines.length === 0) return [];
     
-    // Detectar el delimitador: contar cuál aparece más en la primera línea
-    const firstLine = lines[0];
-    const semicolonCount = (firstLine.match(/;/g) || []).length;
-    const commaCount = (firstLine.match(/,/g) || []).length;
+    // Detectar el delimitador: contar cuál aparece más en la primera línea no vacía
+    const firstNonEmptyLine = lines.find(line => line.trim() && !line.match(/^[,;]+$/));
+    if (!firstNonEmptyLine) return [];
+    
+    const semicolonCount = (firstNonEmptyLine.match(/;/g) || []).length;
+    const commaCount = (firstNonEmptyLine.match(/,/g) || []).length;
     const delimiter = semicolonCount >= commaCount ? ';' : ',';
     
-    const headers = lines[0].split(delimiter).map(h => h.trim());
+    // Filtrar líneas que solo contienen delimitadores o están vacías
+    const validLines = lines.filter(line => {
+        const trimmed = line.trim();
+        return trimmed && !line.match(new RegExp(`^[${delimiter}\\s]+$`));
+    });
     
-    return lines.slice(1).map(line => {
-        const values = line.split(delimiter);
+    if (validLines.length === 0) return [];
+    
+    // Función para parsear campos CSV respetando comillas
+    function parseCSVLine(line, delimiter) {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+        
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            
+            if (char === '"') {
+                if (inQuotes && line[i + 1] === '"') {
+                    current += '"';
+                    i++;
+                } else {
+                    inQuotes = !inQuotes;
+                }
+            } else if (char === delimiter && !inQuotes) {
+                result.push(current.trim());
+                current = '';
+            } else {
+                current += char;
+            }
+        }
+        result.push(current.trim());
+        
+        return result;
+    }
+    
+    const headers = parseCSVLine(validLines[0], delimiter);
+    
+    return validLines.slice(1).map(line => {
+        const values = parseCSVLine(line, delimiter);
         const row = {};
         headers.forEach((header, index) => {
-            row[header] = values[index] ? values[index].trim() : '';
+            row[header] = values[index] || '';
         });
         return row;
     });
