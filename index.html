@@ -85,8 +85,7 @@
         }
 
         input[type="text"],
-        input[type="tel"],
-        select {
+        input[type="tel"] {
             width: 100%;
             padding: 0.75rem 1rem;
             border: 2px solid var(--border);
@@ -97,8 +96,7 @@
         }
 
         input[type="text"]:focus,
-        input[type="tel"]:focus,
-        select:focus {
+        input[type="tel"]:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
@@ -334,11 +332,8 @@
             <form id="personalDataForm">
                 <div class="form-group">
                     <label for="year">Año fiscal</label>
-                    <select id="year" required>
-                        <option value="2024">2024</option>
-                        <option value="2023">2023</option>
-                        <option value="2022">2022</option>
-                    </select>
+                    <input type="text" id="year" placeholder="2024" required pattern="[0-9]{4}" maxlength="4">
+                    <span class="help-text">Año de 4 dígitos (ej: 2024)</span>
                 </div>
                 
                 <div class="form-group">
@@ -454,12 +449,13 @@
         elements.downloadBtn.addEventListener('click', downloadFile);
 
         // Verificar si todos los campos obligatorios están completos
-        ['name', 'dni', 'phone'].forEach(field => {
+        ['year', 'name', 'dni', 'phone'].forEach(field => {
             elements[field].addEventListener('input', checkFormValidity);
         });
 
         function checkFormValidity() {
-            const isValid = elements.name.value && 
+            const isValid = elements.year.value && 
+                           elements.name.value && 
                            elements.dni.value && 
                            elements.phone.value && 
                            currentYearData;
