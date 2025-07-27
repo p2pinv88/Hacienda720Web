@@ -475,21 +475,30 @@
             return amount;
         }
 
-        function parseCSV(text) {
-            // Normalizar saltos de línea: convierte \r\n y \r a \n
-            const normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-            const lines = normalizedText.split('\n').filter(line => line.trim());
-            const headers = lines[0].split(';').map(h => h.trim());
-            
-            return lines.slice(1).map(line => {
-                const values = line.split(';');
-                const row = {};
-                headers.forEach((header, index) => {
-                    row[header] = values[index] ? values[index].trim() : '';
-                });
-                return row;
-            });
-        }
+function parseCSV(text) {
+    // Normalizar saltos de línea: convierte \r\n y \r a \n
+    const normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    const lines = normalizedText.split('\n').filter(line => line.trim());
+    
+    if (lines.length === 0) return [];
+    
+    // Detectar el delimitador: contar cuál aparece más en la primera línea
+    const firstLine = lines[0];
+    const semicolonCount = (firstLine.match(/;/g) || []).length;
+    const commaCount = (firstLine.match(/,/g) || []).length;
+    const delimiter = semicolonCount >= commaCount ? ';' : ',';
+    
+    const headers = lines[0].split(delimiter).map(h => h.trim());
+    
+    return lines.slice(1).map(line => {
+        const values = line.split(delimiter);
+        const row = {};
+        headers.forEach((header, index) => {
+            row[header] = values[index] ? values[index].trim() : '';
+        });
+        return row;
+    });
+}
 
         // Procesar archivo del año actual
         async function handleCurrentYearFile(e) {
