@@ -475,9 +475,10 @@
             return amount;
         }
 
-        // Parsear CSV
         function parseCSV(text) {
-            const lines = text.split('\n').filter(line => line.trim());
+            // Normalizar saltos de línea: convierte \r\n y \r a \n
+            const normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+            const lines = normalizedText.split('\n').filter(line => line.trim());
             const headers = lines[0].split(';').map(h => h.trim());
             
             return lines.slice(1).map(line => {
