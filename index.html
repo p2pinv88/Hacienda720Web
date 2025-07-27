@@ -540,7 +540,7 @@ function parseCSV(text) {
             
             data.forEach(loan => {
                 const amount = parseFloat(commasToDot(loan["Outstanding investments LOC"] || "0"));
-                if (amount === 0) return;
+                if (isNan(amount) || amount === 0) return;
 
                 const isin = loan["ISIN"];
                 if (!isin) return;
