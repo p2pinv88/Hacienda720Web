@@ -474,8 +474,7 @@
             }
             return amount;
         }
-
-// Parsear CSV
+        
 function parseCSV(text) {
     // Normalizar saltos de línea: convierte \r\n y \r a \n
     const normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
@@ -533,7 +532,12 @@ function parseCSV(text) {
         const values = parseCSVLine(line, delimiter);
         const row = {};
         headers.forEach((header, index) => {
-            row[header] = values[index] || '';
+            // Eliminar comillas dobles al inicio y final si existen
+            let value = values[index] || '';
+            if (value.startsWith('"') && value.endsWith('"')) {
+                value = value.slice(1, -1);
+            }
+            row[header] = value;
         });
         return row;
     });
