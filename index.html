@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Archivos 720 - Mintos</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            animation: slideUp 0.5s ease-out;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--card-bg);
+        }
+
+        input[type="text"]:focus,
+        input[type="tel"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .file-upload {
+            position: relative;
+            display: block;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .file-upload:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-info {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: var(--bg);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary) 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #86efac;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .results {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--bg);
+            border-radius: 12px;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .issuer-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .issuer-table th,
+        .issuer-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .issuer-table th {
+            background: var(--bg);
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .issuer-table tr:hover {
+            background: var(--bg);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .help-text {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Generador de Archivos 720</h1>
+            <p class="subtitle">Convierte tus balances de Mintos al formato de Hacienda</p>
+        </header>
+
+        <div class="card">
+            <h2>Datos Personales</h2>
+            <form id="personalDataForm">
+                <div class="form-group">
+                    <label for="year">Año fiscal</label>
+                    <select id="year" required>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="name">Nombre completo</label>
+                    <input type="text" id="name" placeholder="APELLIDO1 APELLIDO2 NOMBRE" required>
+                    <span class="help-text">Formato: APELLIDO1 APELLIDO2 NOMBRE (en mayúsculas)</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dni">DNI</label>
+                    <input type="text" id="dni" placeholder="12345678A" required pattern="[0-9]{8}[A-Z]">
+                    <span class="help-text">8 dígitos + letra en mayúscula</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Teléfono</label>
+                    <input type="tel" id="phone" placeholder="600112233" required pattern="[0-9]{9}">
+                    <span class="help-text">9 dígitos sin espacios ni guiones</span>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Archivos de Balance</h2>
+            
+            <div class="form-group">
+                <label for="currentYearFile">Balance del año a declarar (obligatorio)</label>
+                <label class="file-upload">
+                    <input type="file" id="currentYearFile" accept=".csv" required>
+                    <span>📁 Seleccionar archivo CSV</span>
+                </label>
+                <div id="currentYearInfo" class="file-info"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="previousYearFile">Balance del año anterior (opcional)</label>
+                <label class="file-upload">
+                    <input type="file" id="previousYearFile" accept=".csv">
+                    <span>📁 Seleccionar archivo CSV</span>
+                </label>
+                <div id="previousYearInfo" class="file-info"></div>
+                <span class="help-text">Solo necesario si declaraste el año anterior</span>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>⚠️ Importante al exportar CSV desde Excel:</strong>
+                <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li>Asegúrate de que las cantidades tengan todos los decimales (normalmente 6)</li>
+                    <li>El formato de cantidades puede ser: español (12.345,67), inglés (12,345.67) o estándar (12345.67)</li>
+                    <li>Usa punto y coma (;) como delimitador</li>
+                </ul>
+            </div>
+
+            <button id="generateBtn" class="btn btn-primary" disabled>
+                Generar Archivo 720
+            </button>
+        </div>
+
+        <div class="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 1rem;">Procesando archivos...</p>
+        </div>
+
+        <div id="results" class="results">
+            <h3>Resultados del Procesamiento</h3>
+            <div class="stats" id="stats"></div>
+            <div id="issuersList"></div>
+            <div style="text-align: center; margin-top: 2rem;">
+                <a id="downloadBtn" class="btn btn-primary" style="display: none;">
+                    💾 Descargar Archivo 720
+                </a>
+            </div>
+        </div>
+
+        <div id="alerts"></div>
+    </div>
+
+    <script>
+        // Mapeo de nombres de emisores a números de registro
+        const ISSUER_NAMES_TO_REGISTRATION_NUMBERS = {
+            "SIA Mintos Finance No.47": "50203493941",
+            "SIA Mintos Finance No.49": "40203515541"
+        };
+
+        // Variables globales
+        let currentYearData = null;
+        let previousYearData = null;
+        let generatedFileContent = null;
+
+        // Elementos del DOM
+        const elements = {
+            year: document.getElementById('year'),
+            name: document.getElementById('name'),
+            dni: document.getElementById('dni'),
+            phone: document.getElementById('phone'),
+            currentYearFile: document.getElementById('currentYearFile'),
+            previousYearFile: document.getElementById('previousYearFile'),
+            currentYearInfo: document.getElementById('currentYearInfo'),
+            previousYearInfo: document.getElementById('previousYearInfo'),
+            generateBtn: document.getElementById('generateBtn'),
+            results: document.getElementById('results'),
+            stats: document.getElementById('stats'),
+            issuersList: document.getElementById('issuersList'),
+            downloadBtn: document.getElementById('downloadBtn'),
+            alerts: document.getElementById('alerts'),
+            loading: document.querySelector('.loading')
+        };
+
+        // Event listeners
+        elements.currentYearFile.addEventListener('change', handleCurrentYearFile);
+        elements.previousYearFile.addEventListener('change', handlePreviousYearFile);
+        elements.generateBtn.addEventListener('click', generateFile);
+        elements.downloadBtn.addEventListener('click', downloadFile);
+
+        // Verificar si todos los campos obligatorios están completos
+        ['name', 'dni', 'phone'].forEach(field => {
+            elements[field].addEventListener('input', checkFormValidity);
+        });
+
+        function checkFormValidity() {
+            const isValid = elements.name.value && 
+                           elements.dni.value && 
+                           elements.phone.value && 
+                           currentYearData;
+            elements.generateBtn.disabled = !isValid;
+        }
+
+        // Funciones para convertir formatos de números
+        function commasToDot(amount) {
+            // Formato español (12.345,67)
+            if (/\b\d{1,3}(?:\.\d{3})*(?:,\d+)?\b/.test(amount)) {
+                return amount.replace(/\./g, '').replace(',', '.');
+            }
+            // Formato inglés (12,345.67)
+            else if (/\b\d{1,3}(?:,\d{3})*(?:\.\d+)?\b/.test(amount)) {
+                return amount.replace(/,/g, '');
+            }
+            return amount;
+        }
+
+        // Parsear CSV
+        function parseCSV(text) {
+            const lines = text.split('\n').filter(line => line.trim());
+            const headers = lines[0].split(';').map(h => h.trim());
+            
+            return lines.slice(1).map(line => {
+                const values = line.split(';');
+                const row = {};
+                headers.forEach((header, index) => {
+                    row[header] = values[index] ? values[index].trim() : '';
+                });
+                return row;
+            });
+        }
+
+        // Procesar archivo del año actual
+        async function handleCurrentYearFile(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            try {
+                const text = await file.text();
+                currentYearData = parseCSV(text);
+                elements.currentYearInfo.textContent = `✓ ${file.name} cargado correctamente`;
+                elements.currentYearInfo.style.color = 'green';
+                checkFormValidity();
+            } catch (error) {
+                showAlert('Error al leer el archivo del año actual', 'error');
+                currentYearData = null;
+                checkFormValidity();
+            }
+        }
+
+        // Procesar archivo del año anterior
+        async function handlePreviousYearFile(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            try {
+                const text = await file.text();
+                previousYearData = parseCSV(text);
+                elements.previousYearInfo.textContent = `✓ ${file.name} cargado correctamente`;
+                elements.previousYearInfo.style.color = 'green';
+            } catch (error) {
+                showAlert('Error al leer el archivo del año anterior', 'error');
+                previousYearData = null;
+            }
+        }
+
+        // Obtener datos de activos desde el balance de Mintos
+        function getAssetDataFromMintosBalance(data) {
+            const assets = {};
+            
+            data.forEach(loan => {
+                const amount = parseFloat(commasToDot(loan["Outstanding investments LOC"] || "0"));
+                if (amount === 0) return;
+
+                const isin = loan["ISIN"];
+                if (!isin) return;
+
+                if (assets[isin]) {
+                    assets[isin].amount += amount;
+                } else {
+                    const registrationNumber = loan["Issuer registration number"] || 
+                                             ISSUER_NAMES_TO_REGISTRATION_NUMBERS[loan["Issuer name"]] || 
+                                             "";
+                    
+                    assets[isin] = {
+                        amount: amount,
+                        issuer_name: loan["Issuer name"] || "",
+                        issuer_registration_number: registrationNumber
+                    };
+                }
+            });
+
+            return assets;
+        }
+
+        // Generar línea del archivo 720
+        function generateLine(year, dni, name, isin, operation, amountCents, issuerName, issuerRegistrationNumber) {
+            const nValuesCents = amountCents * 100;
+            
+            // Formatear campos con longitud fija
+            const formattedName = name.padEnd(40, ' ').substring(0, 40);
+            const formattedIssuerName = issuerName.padEnd(24, ' ').substring(0, 24);
+            const formattedRegistrationNumber = issuerRegistrationNumber.padEnd(20, ' ').substring(0, 20);
+            
+            return `2720${year}${dni}${dni.padEnd(13, ' ')}${formattedName}1${' '.repeat(25)}V2${' '.repeat(25)}LV1${isin}${' '.repeat(70)}${formattedIssuerName}${' '.repeat(17)}${formattedRegistrationNumber}${' '.repeat(205)}LV00000000${operation}00000000 ${String(Math.floor(amountCents)).padStart(14, '0')} 00000000000000A${String(Math.floor(nValuesCents)).padStart(12, '0')} 10000${' '.repeat(20)}\n`;
+        }
+
+        // Generar archivo 720
+        function generateFile() {
+            elements.loading.classList.add('show');
+            
+            setTimeout(() => {
+                try {
+                    const year = elements.year.value;
+                    const name = elements.name.value.toUpperCase();
+                    const dni = elements.dni.value.toUpperCase();
+                    const phone = elements.phone.value;
+
+                    // Procesar activos
+                    const assets = getAssetDataFromMintosBalance(currentYearData);
+                    const assetsPreviousExercise = previousYearData ? 
+                        getAssetDataFromMintosBalance(previousYearData) : {};
+
+                    // Calcular totales
+                    const totalAmount = Object.values(assets).reduce((sum, asset) => sum + asset.amount, 0);
+                    const nEntries = Object.keys(assets).length;
+
+                    // Generar primera línea
+                    const formattedName = name.padEnd(40, ' ').substring(0, 40);
+                    let fileContent = `1720${year}${dni}${formattedName}T${phone}${formattedName}7200000000000  ${String(nEntries).padStart(22, '0')} ${String(Math.floor(totalAmount * 100)).padStart(17, '0')} 00000000000000000${' '.repeat(322)}\n`;
+
+                    // Procesar ISINs
+                    const isins = new Set(Object.keys(assets));
+                    const isinsPreviousExercise = new Set(Object.keys(assetsPreviousExercise));
+                    
+                    const allIsins = new Set([...isins, ...isinsPreviousExercise]);
+                    const newIsins = [...isins].filter(x => !isinsPreviousExercise.has(x));
+                    const modifiedIsins = [...isins].filter(x => isinsPreviousExercise.has(x));
+                    const cancelledIsins = [...isinsPreviousExercise].filter(x => !isins.has(x));
+
+                    // Estadísticas para mostrar
+                    const stats = {
+                        new: newIsins.length,
+                        modified: modifiedIsins.length,
+                        cancelled: cancelledIsins.length,
+                        total: nEntries,
+                        totalAmount: totalAmount
+                    };
+
+                    // Generar líneas para cada activo
+                    const processedAssets = [];
+                    
+                    allIsins.forEach(isin => {
+                        let operation, value, amountCents;
+                        
+                        if (newIsins.includes(isin)) {
+                            operation = 'A';
+                            value = assets[isin];
+                            amountCents = Math.max(Math.round(value.amount * 100), 1);
+                        } else if (modifiedIsins.includes(isin)) {
+                            operation = 'M';
+                            value = assets[isin];
+                            amountCents = Math.max(Math.round(value.amount * 100), 1);
+                        } else if (cancelledIsins.includes(isin)) {
+                            // Skip cancelled assets as per the original code
+                            return;
+                        }
+
+                        const line = generateLine(year, dni, name, isin, operation, amountCents, 
+                                                value.issuer_name, value.issuer_registration_number);
+                        fileContent += line;
+                        
+                        processedAssets.push({
+                            isin: isin,
+                            operation: operation,
+                            amount: value.amount,
+                            issuerName: value.issuer_name
+                        });
+                    });
+
+                    generatedFileContent = fileContent;
+                    showResults(stats, processedAssets);
+                    
+                    elements.loading.classList.remove('show');
+                    showAlert('Archivo 720 generado correctamente', 'success');
+                } catch (error) {
+                    elements.loading.classList.remove('show');
+                    showAlert('Error al generar el archivo: ' + error.message, 'error');
+                    console.error(error);
+                }
+            }, 500);
+        }
+
+        // Mostrar resultados
+        function showResults(stats, assets) {
+            // Mostrar estadísticas
+            elements.stats.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${stats.total}</div>
+                    <div class="stat-label">Total Activos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.totalAmount.toFixed(2)}€</div>
+                    <div class="stat-label">Valor Total</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.new}</div>
+                    <div class="stat-label">Nuevos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.modified}</div>
+                    <div class="stat-label">Modificados</div>
+                </div>
+            `;
+
+            // Mostrar lista de emisores
+            elements.issuersList.innerHTML = `
+                <h4>Detalle de Activos Procesados</h4>
+                <table class="issuer-table">
+                    <thead>
+                        <tr>
+                            <th>ISIN</th>
+                            <th>Emisor</th>
+                            <th>Operación</th>
+                            <th>Importe</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${assets.map(asset => `
+                            <tr>
+                                <td>${asset.isin}</td>
+                                <td>${asset.issuerName}</td>
+                                <td>${asset.operation === 'A' ? 'Alta' : 'Modificación'}</td>
+                                <td>${asset.amount.toFixed(2)}€</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            elements.results.classList.add('show');
+            elements.downloadBtn.style.display = 'inline-block';
+        }
+
+        // Descargar archivo
+        function downloadFile() {
+            const blob = new Blob([generatedFileContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `modelo720_${elements.year.value}.720`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Mostrar alertas
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            elements.alerts.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
